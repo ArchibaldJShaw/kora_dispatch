@@ -142,7 +142,17 @@ function M.install()
         __call = function(_, name, fn) registered[name] = fn end,
     })
 
+    -- Spy for the diagnostic API: every level call is recorded in Kora.logging.calls.
+    local logging = { calls = {}, isEnabled = function() return true end }
+    for _, level in ipairs({ 'trace', 'debug', 'info', 'warn', 'error', 'fatal' }) do
+        logging[level] = function(event, message, fields)
+            logging.calls[#logging.calls + 1] = { level = level, event = event, message = message, fields = fields }
+            return true
+        end
+    end
+
     _G.Kora = {
+        logging = logging,
         util = {
             isFiniteNumber = function(value)
                 return type(value) == 'number' and value == value and value ~= math.huge and value ~= -math.huge

@@ -30,7 +30,7 @@ if Config.compat.legacyInbound then
     local owner = GetCurrentResourceName()
     for key, definition in pairs(compatibilityAlerts) do
         local ok, err = Dispatch.ingress.register(key, definition, owner)
-        if not ok then print(('^3[kora_dispatch]^7 could not register compatibility alert %s: %s'):format(key, err)) end
+        if not ok then Kora.logging.warn('compat.alert_register_failed', 'Could not register a compatibility alert', { alert = tostring(key), error = tostring(err) }) end
     end
 
     RegisterNetEvent('police:server:policeAlert', function()

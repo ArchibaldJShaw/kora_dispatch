@@ -104,8 +104,9 @@ function Dispatch.api.createCall(payload)
     local count = push(call, 'kora_dispatch:client:call')
 
     if Config.debug then
-        print(('[kora_dispatch] #%d %s/%s "%s" -> %d recipient(s) from %s')
-            :format(call.id, service, call.code or 'no-code', call.title, count, origin))
+        Kora.logging.debug('api.call_created', 'Dispatch call created', {
+            callId = call.id, service = service, code = call.code or 'no-code', recipients = count, origin = tostring(origin),
+        })
     end
 
     return call.id, count

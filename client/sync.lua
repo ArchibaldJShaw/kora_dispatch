@@ -15,7 +15,7 @@ local function fetch()
         if ok then return true, data end
         local retryAfter = type(data) == 'string' and tonumber(data:match('retry in (%d+)ms'))
         if not retryAfter or attempt == HYDRATE_ATTEMPTS then
-            print(('[kora_dispatch] hydrate failed: %s'):format(tostring(data):match('Callback [^\n^]+') or tostring(data)))
+            Kora.logging.error('sync.hydrate_failed', 'Hydrate failed', { error = tostring(data):match('Callback [^\n^]+') or tostring(data) })
             return false
         end
         Wait(retryAfter + 100)
