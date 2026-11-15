@@ -90,4 +90,19 @@ h.test('a malformed legacy payload is ignored, not fatal', function()
     h.assertEqual(#Dispatch.api.getCalls({ service = 'leo' }), 0, 'nothing recorded, nothing thrown')
 end)
 
+h.test('a failed compatibility alert registration is reported through Kora.logging.warn with the error in fields', function()
+    Kora.logging.calls = {}
+    local original = Dispatch.ingress.register
+    Dispatch.ingress.register = function() return false, 'registry full' end
+    Config.compat.coreAlerts = true
+    dofile('server/compat.lua')
+    Dispatch.ingress.register = original
+
+    local call = Kora.logging.calls[1]
+    h.assertTrue(call ~= nil, 'a logger call was made')
+    h.assertEqual(call.level, 'warn', 'level')
+    h.assertEqual(call.event, 'compat.alert_register_failed', 'event name')
+    h.assertEqual(call.fields.error, 'registry full', 'error carried in fields')
+end)
+
 h.report('compat')

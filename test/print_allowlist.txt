@@ -1,0 +1,2 @@
+server/dev.lua:/dispatchstatus is an admin console command whose purpose is to print a status report to the console
+client/keybinds.lua:/dispatchcoords is a calibration command whose purpose is to print the player's coordinates to the console
